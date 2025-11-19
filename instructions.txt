@@ -1,0 +1,28 @@
+SECTION_ONE
+Getting Started
+Welcome to the Document Management System. This tool allows you to upload, manage, and compare documents efficiently.
+
+Before you begin:
+- Ensure you have the necessary permissions to upload documents
+- Supported file formats include PDF, DOC, DOCX, TXT, and images
+- Maximum file size is 10MB per upload
+- Keep your documents organized by using descriptive filenames
+
+Basic Information:
+General Information
+
+
+
+SECTION_One
+Standard Header
+General Instructions
+
+1. Topic
+   - Statement One
+
+SECTION_THREE
+Standard Header
+General Instructions
+
+1. Topic
+   - Statement One
