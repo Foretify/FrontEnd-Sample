@@ -33,7 +33,7 @@ class InstructionsPage {
             
             html += `
                 <div class="instruction-section">
-                    <h2>Section ${index + 1}: ${title}</h2>
+                    <h2>${title}</h2>
                     <div class="section-content">
                         ${this.formatInstructionContent(body)}
                     </div>
