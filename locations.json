@@ -1,0 +1,70 @@
+{
+  "productTypes": [
+    {
+      "name": "Type One",
+      "materials": [
+        {
+          "name": "Active Ingredient",
+          "types": ["Primary", "Secondary", "Intermediate"]
+        },
+        {
+          "name": "Excipient",
+          "types": ["Filler", "Binder", "Coating"]
+        },
+        {
+          "name": "Packaging",
+          "types": ["Primary", "Secondary", "Tertiary"]
+        }
+      ]
+    },
+    {
+      "name": "Medical Device",
+      "materials": [
+        {
+          "name": "Polymer",
+          "types": ["Thermoplastic", "Thermoset", "Elastomer"]
+        },
+        {
+          "name": "Metal",
+          "types": ["Stainless Steel", "Titanium", "Aluminum"]
+        },
+        {
+          "name": "Ceramic",
+          "types": ["Oxide", "Non-Oxide", "Composite"]
+        }
+      ]
+    },
+    {
+      "name": "Biologic",
+      "materials": [
+        {
+          "name": "Protein",
+          "types": ["Monoclonal Antibody", "Enzyme", "Hormone"]
+        },
+        {
+          "name": "Nucleic Acid",
+          "types": ["DNA", "RNA", "siRNA"]
+        },
+        {
+          "name": "Cell-Based",
+          "types": ["Stem Cell", "Immune Cell", "Tissue"]
+        }
+      ]
+    }
+  ],
+  "documentTypes": [
+    "Certificate of Analysis",
+    "Safety Data Sheet",
+    "Specification",
+    "Method Validation",
+    "Stability Study",
+    "Manufacturing Record",
+    "Quality Control Report",
+    "Regulatory Submission"
+  ],
+  "versions": [
+    "1.0",
+    "2.0",
+    "3.0"
+  ]
+}
