@@ -69,15 +69,9 @@ class UploadPage {
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="${cardId}-material">Material</label>
+                        <label for="${cardId}-material">Material Type</label>
                         <select id="${cardId}-material" class="form-select" data-card-id="${cardId}" disabled>
-                            <option value="">Select Material</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="${cardId}-type">Type</label>
-                        <select id="${cardId}-type" class="form-select" data-card-id="${cardId}" disabled>
-                            <option value="">Select Type</option>
+                            <option value="">Select Material Type</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -168,22 +162,10 @@ class UploadPage {
         // Product Type change listener
         const productTypeSelect = document.getElementById(`${cardId}-productType`);
         const materialSelect = document.getElementById(`${cardId}-material`);
-        const typeSelect = document.getElementById(`${cardId}-type`);
         
         productTypeSelect.addEventListener('change', (e) => {
             const productType = e.target.value;
             this.updateMaterials(cardId, productType);
-            
-            // Reset and disable type
-            typeSelect.innerHTML = '<option value="">Select Type</option>';
-            typeSelect.disabled = true;
-        });
-        
-        // Material change listener
-        materialSelect.addEventListener('change', (e) => {
-            const productType = productTypeSelect.value;
-            const material = e.target.value;
-            this.updateTypes(cardId, productType, material);
         });
         
         // File upload button listener
@@ -215,42 +197,30 @@ class UploadPage {
 
     updateMaterials(cardId, productType) {
         const materialSelect = document.getElementById(`${cardId}-material`);
-        materialSelect.innerHTML = '<option value="">Select Material</option>';
+        materialSelect.innerHTML = '<option value="">Select Material Type</option>';
         materialSelect.disabled = true;
         
         if (!productType || !this.documentData) return;
         
         const productData = this.documentData.productTypes.find(p => p.name === productType);
         if (productData && productData.materials) {
+            // Flatten all material types into a single list
+            const allTypes = [];
             productData.materials.forEach(material => {
+                if (material.types) {
+                    material.types.forEach(type => {
+                        allTypes.push(`${material.name} - ${type}`);
+                    });
+                }
+            });
+            
+            allTypes.forEach(materialType => {
                 const option = document.createElement('option');
-                option.value = material.name;
-                option.textContent = material.name;
+                option.value = materialType;
+                option.textContent = materialType;
                 materialSelect.appendChild(option);
             });
             materialSelect.disabled = false;
-        }
-    }
-
-    updateTypes(cardId, productType, material) {
-        const typeSelect = document.getElementById(`${cardId}-type`);
-        typeSelect.innerHTML = '<option value="">Select Type</option>';
-        typeSelect.disabled = true;
-        
-        if (!productType || !material || !this.documentData) return;
-        
-        const productData = this.documentData.productTypes.find(p => p.name === productType);
-        if (productData) {
-            const materialData = productData.materials.find(m => m.name === material);
-            if (materialData && materialData.types) {
-                materialData.types.forEach(type => {
-                    const option = document.createElement('option');
-                    option.value = type;
-                    option.textContent = type;
-                    typeSelect.appendChild(option);
-                });
-                typeSelect.disabled = false;
-            }
         }
     }
 
@@ -271,12 +241,8 @@ class UploadPage {
         }
         if (productTypeSelect) productTypeSelect.value = '';
         if (materialSelect) {
-            materialSelect.innerHTML = '<option value="">Select Material</option>';
+            materialSelect.innerHTML = '<option value="">Select Material Type</option>';
             materialSelect.disabled = true;
-        }
-        if (typeSelect) {
-            typeSelect.innerHTML = '<option value="">Select Type</option>';
-            typeSelect.disabled = true;
         }
         if (documentTypeSelect) documentTypeSelect.value = '';
         if (versionSelect) versionSelect.value = '';
@@ -307,7 +273,6 @@ class UploadPage {
             const fileInput = document.getElementById(`${cardId}-file`);
             const productTypeSelect = document.getElementById(`${cardId}-productType`);
             const materialSelect = document.getElementById(`${cardId}-material`);
-            const typeSelect = document.getElementById(`${cardId}-type`);
             const documentTypeSelect = document.getElementById(`${cardId}-documentType`);
             const versionSelect = document.getElementById(`${cardId}-version`);
             const statusDiv = document.getElementById(`${cardId}-status`);
@@ -315,11 +280,10 @@ class UploadPage {
             const file = fileInput.files[0];
             const productType = productTypeSelect.value;
             const material = materialSelect.value;
-            const type = typeSelect.value;
             const documentType = documentTypeSelect.value;
             const version = versionSelect.value;
 
-            if (!file || !productType || !material || !type || !documentType || !version) {
+            if (!file || !productType || !material || !documentType || !version) {
                 statusDiv.textContent = 'Please complete all fields.';
                 statusDiv.style.color = 'red';
                 hasErrors = true;
@@ -328,8 +292,7 @@ class UploadPage {
                 allData.push({
                     file: file.name,
                     productType: productType,
-                    material: material,
-                    type: type,
+                    materialType: material,
                     documentType: documentType,
                     version: version
                 });
@@ -338,7 +301,7 @@ class UploadPage {
 
         if (!hasErrors && allData.length > 0) {
             console.log('Submitting and extracting:', allData);
-            alert(`Submitting and extracting ${allData.length} document(s):\n${allData.map(d => `${d.file} - ${d.productType}/${d.material}/${d.type} (${d.documentType} v${d.version})`).join('\n')}`);
+            alert(`Submitting and extracting ${allData.length} document(s):\n${allData.map(d => `${d.file} - ${d.productType}/${d.materialType} (${d.documentType} v${d.version})`).join('\n')}`);
             // Here you would typically send the data to your backend
         } else if (allData.length === 0) {
             alert('Please add at least one document before submitting.');
