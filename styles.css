@@ -17,7 +17,7 @@ body {
 
 .sidebar {
     width: 250px;
-    background-color: #d0202e;
+    background-color: #d1505b;
     color: white;
     padding: 20px;
     overflow-y: auto;
@@ -86,7 +86,7 @@ body {
 }
 
 h1 {
-    color: #d0202e;
+    color: #0a0a0a;
     margin-bottom: 24px;
     font-size: 36px;
     font-weight: 600;
@@ -403,7 +403,7 @@ h1 {
     margin-bottom: 30px;
     padding: 24px;
     background-color: #ffffff;
-    border-left: 4px solid #d0202e;
+    border-left: 4px solid #c7a3a6;
     border-radius: 4px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
@@ -426,6 +426,6 @@ h1 {
 }
 
 .section-content strong {
-    color: #d0202e;
+    color: #b99094;
     font-weight: 600;
 }
