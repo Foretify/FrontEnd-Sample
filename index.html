@@ -41,9 +41,24 @@
             </div>
 
             <div id="compare" class="page">
+                
+                
+                <!-- Document Selector -->
+                <div class="document-selector-section">
+                    <h2>Select Document</h2>
+                    <div class="form-group">
+                        <select id="documentSelector" class="form-select document-select">
+                            <option value="">Select a document...</option>
+                            <!-- Options will be dynamically loaded from results folder -->
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- Results Section -->
                 <div class="compare-container">
-                    <p>Results will be displayed here.</p>
-                    <div id="resultsContainer"></div>
+                    <div id="resultsContainer">
+                        <p class="no-results">Please select a document to view results.</p>
+                    </div>
                 </div>
             </div>
         </main>

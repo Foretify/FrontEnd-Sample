@@ -1,0 +1,41 @@
+{
+    "batch_id": "aslkdjfsadf",
+    "token_id": "qwerqwerqwer",
+    "request_time": "2024-06-10T12:00:00Z",
+    "status": "completed",
+    "document_name": "sample.pdf",
+    "document_path": "/uploads/sample.pdf",
+    "json_preview": {
+        "ok": true,
+        "meta": {
+            "document_path": "/uploads/sample.pdf",
+            "rules_path": "/rules/rules.json"
+        }, 
+        "Verification":[
+            {
+                "metadataName": "Product Type",
+                "metadataLabel": "Drug Product formula",
+                "VerificationPrompt": "Is the product type 'Drug Product' correct for this document?",
+                "VerificationDescription": "Full Extraction of the table",
+                "renditionType": "table",
+                "VerificationType": "Automatic",
+                "VerificationResult": "COMPLIANT",
+                "value": {
+                    "tableTitle": "Product Type Details",
+                    "headers": ["Product Type", "Description", "Code"],
+                    "rows": [{
+                        "Product Type": "Drug Product",
+                        "Description": "Medicinal product intended for use in humans or animals",
+                        "Code": "DP001"
+                    },
+                    {
+                        "Product Type": "Drug Substance",
+                        "Description": "Active ingredient used in the manufacture of a drug product",
+                        "Code": "DS001"
+                    }]
+                    
+                }
+            }
+        ]
+    }
+}
