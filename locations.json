@@ -1,66 +1,32 @@
 {
   "productTypes": [
     {
-      "name": "Type One",
+      "name": "Drug Product",
       "materials": [
         {
-          "name": "Active Ingredient",
-          "types": ["Primary", "Secondary", "Intermediate"]
-        },
-        {
-          "name": "Excipient",
-          "types": ["Filler", "Binder", "Coating"]
-        },
-        {
-          "name": "Packaging",
-          "types": ["Primary", "Secondary", "Tertiary"]
+          "name": "LY12345",
+          "types": ["   "]
+       
         }
       ]
     },
     {
-      "name": "Medical Device",
+      "name": "Drug Substance",
       "materials": [
         {
-          "name": "Polymer",
-          "types": ["Thermoplastic", "Thermoset", "Elastomer"]
-        },
-        {
-          "name": "Metal",
-          "types": ["Stainless Steel", "Titanium", "Aluminum"]
-        },
-        {
-          "name": "Ceramic",
-          "types": ["Oxide", "Non-Oxide", "Composite"]
+         "name": "LY12346",
+          "types": ["   "]
         }
-      ]
-    },
-    {
-      "name": "Biologic",
-      "materials": [
-        {
-          "name": "Protein",
-          "types": ["Monoclonal Antibody", "Enzyme", "Hormone"]
-        },
-        {
-          "name": "Nucleic Acid",
-          "types": ["DNA", "RNA", "siRNA"]
-        },
-        {
-          "name": "Cell-Based",
-          "types": ["Stem Cell", "Immune Cell", "Tissue"]
-        }
+        
       ]
     }
+    
+     
   ],
   "documentTypes": [
-    "Certificate of Analysis",
-    "Safety Data Sheet",
-    "Specification",
-    "Method Validation",
-    "Stability Study",
-    "Manufacturing Record",
-    "Quality Control Report",
-    "Regulatory Submission"
+    "MANF",
+    "CSSS",
+    "DPFD"
   ],
   "versions": [
     "1.0",
