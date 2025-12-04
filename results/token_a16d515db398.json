@@ -1,0 +1,18 @@
+{
+    "token_id": "token_a16d515db398",
+    "batch_id": "batch_cb6ecd2e",
+    "workstream": "Drug Product",
+    "material_id": "string",
+    "document_type": "string",
+    "version": "v1.0",
+    "status": "completed",
+    "created_at": "2025-12-04T02:09:30.357049",
+    "completed_at": "2025-12-04T02:09:30.370652",
+    "result": [
+        "United States",
+        "China",
+        "Germany",
+        "United Kingdom",
+        "France"
+    ]
+}

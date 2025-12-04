@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Save Result</title>
+</head>
+<body>
+    <h1>Test Save Result API</h1>
+    <button onclick="testSave()">Test Save Token File</button>
+    <pre id="output"></pre>
+
+    <script>
+        async function testSave() {
+            const output = document.getElementById('output');
+            output.textContent = 'Testing...\n';
+            
+            try {
+                // First, get job status from backend
+                output.textContent += 'Fetching job status from backend...\n';
+                const statusResponse = await fetch('http://localhost:8000/api/job-status/token_0bbba549286b');
+                output.textContent += `Backend status: ${statusResponse.status}\n`;
+                
+                if (statusResponse.ok) {
+                    const jobData = await statusResponse.json();
+                    output.textContent += `Job data received:\n${JSON.stringify(jobData, null, 2)}\n\n`;
+                    
+                    // Now try to save it
+                    output.textContent += 'Saving to file...\n';
+                    const saveResponse = await fetch('http://localhost:5000/api/save-result', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            token_id: jobData.token_id,
+                            data: jobData
+                        })
+                    });
+                    
+                    output.textContent += `Save response status: ${saveResponse.status}\n`;
+                    const saveResult = await saveResponse.json();
+                    output.textContent += `Save result:\n${JSON.stringify(saveResult, null, 2)}\n`;
+                } else {
+                    const errorText = await statusResponse.text();
+                    output.textContent += `Error: ${errorText}\n`;
+                }
+            } catch (error) {
+                output.textContent += `Error: ${error.message}\n${error.stack}\n`;
+            }
+        }
+    </script>
+</body>
+</html>

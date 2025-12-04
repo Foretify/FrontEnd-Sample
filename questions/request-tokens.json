@@ -1,0 +1,24 @@
+{
+    "requests": [
+        {
+            "batch_id": "batch_001",
+            "token_id": "token_d2786a95e38d",
+            "workstream": "Drug Product",
+            "material_id": "MAT001",
+            "document_type": "DPFD",
+            "version": "v1.0",
+            "status": "completed",
+            "completed_at": "2025-12-04T01:57:50.345275"
+        },
+        {
+            "batch_id": "batch_002",
+            "token_id": "token_32700ddce7e8",
+            "workstream": "Drug Substance",
+            "material_id": "MAT002",
+            "document_type": "MANF",
+            "version": "v2.0",
+            "status": "completed",
+            "completed_at": "2025-12-04T01:29:46.104458"
+        }
+    ]
+}

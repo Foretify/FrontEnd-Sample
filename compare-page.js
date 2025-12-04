@@ -8,8 +8,148 @@ class ComparePage {
     }
 
     async init() {
+        await this.updateRequestStatuses();
         await this.loadAvailableDocuments();
         this.setupDocumentSelector();
+    }
+
+    async updateRequestStatuses() {
+        // Load request tokens file and check status with backend API
+        try {
+            console.log('Checking request statuses...');
+            
+            // Load the request tokens file
+            const tokensResponse = await fetch('/token_results/request-tokens.json');
+            if (!tokensResponse.ok) {
+                console.warn('Could not load token_results file:', tokensResponse.status);
+                return;
+            }
+            
+            const tokensData = await tokensResponse.json();
+            console.log('Loaded token results data:', tokensData);
+            
+            if (!tokensData.requests || tokensData.requests.length === 0) {
+                console.log('No requests to check');
+                return;
+            }
+            
+            let savedCount = 0;
+            let updatedRequests = [];
+            
+            // Check each request with the backend API
+            for (const request of tokensData.requests) {
+                console.log(`Checking token: ${request.token_id}, current status: ${request.status}`);
+                
+                try {
+                    // Check job status from backend API
+                    const statusUrl = `http://localhost:8000/api/job-status/${request.token_id}`;
+                    console.log(`  -> Calling: ${statusUrl}`);
+                    const statusResponse = await fetch(statusUrl);
+                    
+                    console.log(`  -> Response status: ${statusResponse.status}`);
+                    
+                    if (statusResponse.ok) {
+                        const jobStatus = await statusResponse.json();
+                        console.log(`  -> Job status from API:`, jobStatus);
+                        
+                        if (jobStatus.status === 'completed') {
+                            // Check if result file already exists
+                            const checkFileResponse = await fetch(`/results/${jobStatus.token_id}.json`);
+                            const fileExists = checkFileResponse.ok;
+                            
+                            if (!fileExists) {
+                                console.log(`  -> Result file doesn't exist, saving...`);
+                                // Save result to separate JSON file
+                                await this.saveResultToFile(jobStatus);
+                                savedCount++;
+                            } else {
+                                console.log(`  -> Result file already exists`);
+                            }
+                            
+                            // Update status in request if not already completed
+                            if (request.status !== 'completed') {
+                                request.status = 'completed';
+                                request.completed_at = jobStatus.completed_at;
+                                console.log(`  -> ✓ Updated status to completed`);
+                            }
+                        } else {
+                            console.log(`  -> Still ${jobStatus.status}`);
+                        }
+                    } else {
+                        const errorText = await statusResponse.text();
+                        console.warn(`  -> API error: ${errorText}`);
+                    }
+                } catch (error) {
+                    console.warn(`  -> Could not check status:`, error);
+                }
+                
+                updatedRequests.push(request);
+            }
+            
+            console.log(`Update summary: ${savedCount} results saved to separate files`);
+            
+            // Save updated request-tokens.json if any updates were made
+            if (savedCount > 0) {
+                console.log('Updating request-tokens.json...');
+                await this.saveTokensFile({ requests: updatedRequests });
+                console.log('request-tokens.json updated');
+            }
+            
+        } catch (error) {
+            console.error('Error updating request statuses:', error);
+        }
+    }
+
+    async saveResultToFile(jobData) {
+        // Save job result as separate JSON file in results folder
+        try {
+            console.log(`Attempting to save result file for ${jobData.token_id}...`);
+            console.log('Job data being sent:', jobData);
+            
+            const response = await fetch('/api/save-result', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    token_id: jobData.token_id,
+                    data: jobData
+                })
+            });
+            
+            console.log(`Response status: ${response.status}`);
+            
+            if (response.ok) {
+                const result = await response.json();
+                console.log(`✓ Result file saved successfully:`, result);
+            } else {
+                const errorText = await response.text();
+                console.warn(`Failed to save result file for ${jobData.token_id}:`, errorText);
+            }
+        } catch (error) {
+            console.error(`Error saving result file for ${jobData.token_id}:`, error);
+        }
+    }
+
+    async saveTokensFile(data) {
+        // Save updated request-tokens.json
+        try {
+            const response = await fetch('/api/save-tokens', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+            
+            if (response.ok) {
+                console.log('request tokens file saved successfully');
+            } else {
+                console.warn('Failed to save request tokens file');
+            }
+        } catch (error) {
+            console.error('Error saving request tokens file:', error);
+        }
     }
 
     async loadAvailableDocuments() {
