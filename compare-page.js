@@ -1,10 +1,15 @@
 // Compare Page Module
+// Main controller for the Compare Results page
+// Handles document loading, display, and integrates with interactive-verifications.js for cell verification
 class ComparePage {
     constructor() {
         this.pageId = 'compare';
         this.resultsData = {};
         this.currentDocument = '';
         this.availableFiles = [];
+        // Initialize interactive verifications module
+        // See interactive-verifications.js for verification functionality
+        this.interactiveVerifications = new InteractiveVerifications(this);
     }
 
     async init() {
@@ -250,6 +255,9 @@ class ComparePage {
         });
 
         container.innerHTML = html;
+        
+        // Attach event listeners to table cells using verification module
+        this.interactiveVerifications.attachCellClickListeners();
     }
 
     renderVerificationTable(verification, index) {
@@ -284,16 +292,21 @@ class ComparePage {
         // Table rows
         if (value.rows && value.rows.length > 0) {
             html += '<tbody>';
-            value.rows.forEach(row => {
+            value.rows.forEach((row, rowIndex) => {
                 html += '<tr>';
                 if (value.headers) {
-                    value.headers.forEach(header => {
-                        html += `<td>${row[header] !== undefined ? row[header] : ''}</td>`;
+                    value.headers.forEach((header, colIndex) => {
+                        const cellValue = row[header] !== undefined ? row[header] : '';
+                        const cellId = `cell-${index}-${rowIndex}-${colIndex}`;
+                        const confidence = this.interactiveVerifications.getConfidenceScore(cellValue);
+                        html += `<td class="clickable-cell" data-cell-id="${cellId}" data-section="${index}" data-row="${rowIndex}" data-col="${colIndex}" data-header="${header}" data-value="${cellValue}" data-confidence="${confidence}">${cellValue}</td>`;
                     });
                 } else {
                     // If no headers, display all row values
-                    Object.values(row).forEach(cellValue => {
-                        html += `<td>${cellValue !== undefined ? cellValue : ''}</td>`;
+                    Object.values(row).forEach((cellValue, colIndex) => {
+                        const cellId = `cell-${index}-${rowIndex}-${colIndex}`;
+                        const confidence = this.interactiveVerifications.getConfidenceScore(cellValue);
+                        html += `<td class="clickable-cell" data-cell-id="${cellId}" data-section="${index}" data-row="${rowIndex}" data-col="${colIndex}" data-value="${cellValue}" data-confidence="${confidence}">${cellValue !== undefined ? cellValue : ''}</td>`;
                     });
                 }
                 html += '</tr>';
