@@ -121,6 +121,95 @@ const apiHandlers = {
                 res.end(JSON.stringify({ error: 'Invalid JSON', details: error.message }));
             }
         });
+    },
+    
+    '/api/save-feedback': (req, res) => {
+        console.log('=== /api/save-feedback endpoint called ===');
+        
+        if (req.method !== 'POST') {
+            console.log('Method not allowed:', req.method);
+            res.writeHead(405, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Method not allowed' }));
+            return;
+        }
+        
+        let body = '';
+        req.on('data', chunk => {
+            body += chunk.toString();
+        });
+        
+        req.on('end', () => {
+            try {
+                console.log('Received feedback data');
+                const feedbackEntry = JSON.parse(body);
+                const feedbackFile = path.join(__dirname, 'user_feedback.json');
+                
+                // Read existing feedback file
+                fs.readFile(feedbackFile, 'utf8', (readError, data) => {
+                    let feedbackData;
+                    
+                    if (readError) {
+                        console.log('Creating new feedback file');
+                        // Initialize new feedback structure
+                        feedbackData = {
+                            feedback_entries: [],
+                            metadata: {
+                                created_at: new Date().toISOString(),
+                                last_updated: new Date().toISOString(),
+                                total_entries: 0,
+                                version: '1.0'
+                            },
+                            statistics: {
+                                total_verifications: 0,
+                                correct_extractions: 0,
+                                corrections_needed: 0,
+                                average_confidence: 0
+                            }
+                        };
+                    } else {
+                        feedbackData = JSON.parse(data);
+                    }
+                    
+                    // Add new feedback entry
+                    feedbackData.feedback_entries.push(feedbackEntry);
+                    
+                    // Update metadata
+                    feedbackData.metadata.last_updated = new Date().toISOString();
+                    feedbackData.metadata.total_entries = feedbackData.feedback_entries.length;
+                    
+                    // Update statistics
+                    const entries = feedbackData.feedback_entries;
+                    feedbackData.statistics.total_verifications = entries.length;
+                    feedbackData.statistics.correct_extractions = entries.filter(e => e.user_verification.is_correct).length;
+                    feedbackData.statistics.corrections_needed = entries.filter(e => e.user_verification.correction_needed).length;
+                    
+                    const totalConfidence = entries.reduce((sum, e) => sum + (e.extraction.confidence_score || 0), 0);
+                    feedbackData.statistics.average_confidence = entries.length > 0 ? (totalConfidence / entries.length).toFixed(2) : 0;
+                    
+                    // Write updated feedback file
+                    fs.writeFile(feedbackFile, JSON.stringify(feedbackData, null, 4), 'utf8', (writeError) => {
+                        if (writeError) {
+                            console.error('Failed to write feedback file:', writeError);
+                            res.writeHead(500, { 'Content-Type': 'application/json' });
+                            res.end(JSON.stringify({ error: 'Failed to save feedback', details: writeError.message }));
+                            return;
+                        }
+                        
+                        console.log('✓ Feedback saved successfully');
+                        res.writeHead(200, { 'Content-Type': 'application/json' });
+                        res.end(JSON.stringify({ 
+                            success: true, 
+                            message: 'Feedback saved successfully',
+                            statistics: feedbackData.statistics
+                        }));
+                    });
+                });
+            } catch (error) {
+                console.error('Error processing feedback:', error);
+                res.writeHead(400, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ error: 'Invalid JSON', details: error.message }));
+            }
+        });
     }
 };
 

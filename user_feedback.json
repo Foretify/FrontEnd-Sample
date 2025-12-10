@@ -1,0 +1,44 @@
+{
+    "feedback_entries": [
+        {
+            "id": "feedback_example_001",
+            "timestamp": "2025-12-10T12:00:00.000Z",
+            "document": {
+                "name": "example.json",
+                "token_id": "token_example123"
+            },
+            "cell": {
+                "id": "cell-0-0-0",
+                "section": "0",
+                "row": 0,
+                "column": 0,
+                "header": "Product Type"
+            },
+            "extraction": {
+                "original_value": "Drug Product",
+                "confidence_score": 95.5
+            },
+            "user_verification": {
+                "is_correct": true,
+                "corrected_value": null,
+                "correction_needed": false
+            },
+            "metadata": {
+                "session_id": "session_example_001",
+                "user_agent": "Mozilla/5.0..."
+            }
+        }
+    ],
+    "metadata": {
+        "created_at": "2025-12-10T00:00:00.000Z",
+        "last_updated": "2025-12-10T12:00:00.000Z",
+        "total_entries": 1,
+        "version": "1.0"
+    },
+    "statistics": {
+        "total_verifications": 1,
+        "correct_extractions": 1,
+        "corrections_needed": 0,
+        "average_confidence": 95.5
+    }
+}

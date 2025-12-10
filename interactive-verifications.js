@@ -19,6 +19,7 @@
  * - Instantiated by ComparePage class
  * - Called after table rendering is complete
  * - Stores verifications in memory for the session
+ * - Sends feedback to collect_feedback.js for quality tracking
  */
 
 class InteractiveVerifications {
@@ -150,9 +151,30 @@ class InteractiveVerifications {
 
         console.log('Verification saved:', this.verifications[cellId]);
         
-        // Visual feedback
+        // Get cell data for feedback
         const cell = document.querySelector(`[data-cell-id="${cellId}"]`);
         if (cell) {
+            // Collect feedback data
+            const feedbackData = {
+                documentName: this.comparePage.currentDocument,
+                tokenId: this.comparePage.resultsData[this.comparePage.currentDocument]?.token_id || 'unknown',
+                cellId: cellId,
+                section: cell.dataset.section,
+                rowIndex: parseInt(cell.dataset.row),
+                colIndex: parseInt(cell.dataset.col),
+                header: cell.dataset.header,
+                originalValue: cell.dataset.value,
+                confidence: parseFloat(cell.dataset.confidence),
+                isCorrect: isCorrect,
+                correctedValue: correctedValue
+            };
+
+            // Record feedback using global feedbackCollector
+            if (typeof feedbackCollector !== 'undefined') {
+                feedbackCollector.recordFeedback(feedbackData);
+            }
+
+            // Visual feedback on cell
             if (isCorrect === 'yes') {
                 cell.classList.add('verified-correct');
                 cell.classList.remove('verified-incorrect');
