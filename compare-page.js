@@ -605,5 +605,3 @@ class ComparePage {
         // No-op
     }
 }
-
-export default ComparePage;
